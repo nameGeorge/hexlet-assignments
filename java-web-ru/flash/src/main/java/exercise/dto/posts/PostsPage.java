@@ -1,17 +1,12 @@
 package exercise.dto.posts;
 
-import java.util.List;
-import exercise.model.Post;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import exercise.dto.BasePage;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import exercise.model.Post;
+import lombok.Getter;
 
+import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class PostsPage extends BasePage {
     private List<Post> posts;
 
