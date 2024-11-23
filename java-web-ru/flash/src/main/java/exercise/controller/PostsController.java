@@ -1,6 +1,6 @@
 package exercise.controller;
 
-import java.util.Collections;
+import static io.javalin.rendering.template.TemplateUtil.model;
 
 import exercise.dto.posts.PostsPage;
 import exercise.dto.posts.PostPage;
@@ -16,34 +16,36 @@ public class PostsController {
 
     public static void build(Context ctx) {
         var page = new BuildPostPage();
-        ctx.render("posts/build.jte", Collections.singletonMap("page", page));
+        ctx.render("posts/build.jte", model("page", page));
     }
 
     // BEGIN
-    public static void create(Context ctx) {
-        try {
-            var name = ctx.formParamAsClass("name", String.class)
-                    .check(value -> value.length() >= 2, "Название поста слишком короткое")
-                    .get();
-            var body = ctx.formParam("body");
-            var post = new Post(name, body);
-            PostRepository.save(post);
-            ctx.sessionAttribute("flash", "Пост был успешно создан!");
-            ctx.redirect(NamedRoutes.postsPath());
-        } catch (ValidationException e) {
-            var name = ctx.formParam("name");
-            var body = ctx.formParam("body");
-            var page = new BuildPostPage(name, body, e.getErrors());
-            ctx.render("posts/build.jte", Collections.singletonMap("page", page));
-        }
-    }
-
     public static void index(Context ctx) {
         var posts = PostRepository.getEntities();
-        String flash = ctx.consumeSessionAttribute("flash");
         var page = new PostsPage(posts);
-        page.setFlash(flash);
-        ctx.render("posts/index.jte", Collections.singletonMap("page", page));
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        ctx.render("posts/index.jte", model("page", page));
+    }
+
+    public static void create(Context ctx) {
+        var name = ctx.formParam("name");
+        var body = ctx.formParam("body");
+        try {
+            name = ctx.formParamAsClass("name", String.class)
+                    .check(value -> value.length() >= 2, "Course name must be longer than 2 characters")
+                    .get();
+
+            body = ctx.formParamAsClass("body", String.class)
+                    .get();
+
+            var post = new Post(name, body);
+            PostRepository.save(post);
+            ctx.sessionAttribute("flash", "Post was successfully created!");
+            ctx.redirect(NamedRoutes.postsPath());
+        } catch (ValidationException e) {
+            var page = new BuildPostPage(name, body, e.getErrors());
+            ctx.render("posts/build.jte", model("page", page));
+        }
     }
     // END
 
@@ -53,6 +55,6 @@ public class PostsController {
                 .orElseThrow(() -> new NotFoundResponse("Post not found"));
 
         var page = new PostPage(post);
-        ctx.render("posts/show.jte", Collections.singletonMap("page", page));
+        ctx.render("posts/show.jte", model("page", page));
     }
 }
