@@ -1,16 +1,15 @@
 package exercise.controller;
 
-import exercise.dto.posts.BuildPostPage;
-import exercise.dto.posts.PostPage;
+import static io.javalin.rendering.template.TemplateUtil.model;
 import exercise.dto.posts.PostsPage;
+import exercise.dto.posts.PostPage;
 import exercise.model.Post;
 import exercise.repository.PostRepository;
+import exercise.dto.posts.BuildPostPage;
 import exercise.util.NamedRoutes;
 import io.javalin.http.Context;
 import io.javalin.validation.ValidationException;
 import io.javalin.http.NotFoundResponse;
-
-import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class PostsController {
 
@@ -19,6 +18,7 @@ public class PostsController {
         ctx.render("posts/build.jte", model("page", page));
     }
 
+    // BEGIN
     public static void create(Context ctx) {
         try {
             var name = ctx.formParamAsClass("name", String.class)
@@ -28,24 +28,24 @@ public class PostsController {
             var post = new Post(name, body);
             PostRepository.save(post);
             ctx.sessionAttribute("flash", "Пост был успешно создан!");
-            ctx.sessionAttribute("flash-type", "success");
-            ctx.redirect(NamedRoutes.postsPath());
 
+            ctx.redirect(NamedRoutes.postsPath());
         } catch (ValidationException e) {
             var name = ctx.formParam("name");
             var body = ctx.formParam("body");
-            var page = new BuildPostPage(name, body, e.getErrors());
-            ctx.render("posts/build.jte", model("page", page)).status(422);
+            ctx.status(422);
         }
     }
 
     public static void index(Context ctx) {
         var posts = PostRepository.getEntities();
+        String flash = ctx.consumeSessionAttribute("flash");
         var page = new PostsPage(posts);
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
-        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+        page.setFlash(flash);
+
         ctx.render("posts/index.jte", model("page", page));
     }
+    // END
 
     public static void show(Context ctx) {
         var id = ctx.pathParamAsClass("id", Long.class).get();
