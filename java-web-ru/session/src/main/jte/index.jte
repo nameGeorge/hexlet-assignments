@@ -15,4 +15,5 @@ content = @`
             <input type="submit" value="Войти">
         </form>
     @endif
+`
 )
