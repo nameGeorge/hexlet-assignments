@@ -19,4 +19,5 @@ public class PostsPage extends BasePage {
         super(flash, flashType);
         this.posts = posts;
     }
+
 }
