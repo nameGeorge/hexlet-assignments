@@ -1,1 +1,1 @@
-rootProject.name = "flash"
+rootProject.name = "mvc"
