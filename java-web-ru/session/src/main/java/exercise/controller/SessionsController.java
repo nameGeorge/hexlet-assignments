@@ -10,42 +10,35 @@ import io.javalin.http.Context;
 
 public class SessionsController {
 
-    // BEGIN
-    public static void mainPage(Context ctx) {
-        var currentUser = ctx.sessionAttribute("currentUser");
-        var page = new MainPage(currentUser);
+    public static void index(Context ctx) {
+        var user = ctx.sessionAttribute("user");
+        var page = new MainPage(user);
         ctx.render("index.jte", model("page", page));
     }
 
-    public static void loginPage(Context ctx) {
-        var currentUser = ctx.sessionAttribute("currentUser");
-        var page = new LoginPage(String.valueOf(currentUser), null);
+    public static void build(Context ctx) {
+        var page = new LoginPage("", "");
         ctx.render("build.jte", model("page", page));
     }
 
-    public static void login(Context ctx) {
-        var username = ctx.formParam("name");
-        var password = Security.encrypt(ctx.formParam("password"));
+    public static void create(Context ctx) {
+        var name = ctx.formParam("name");
+        var password = ctx.formParam("password");
 
-        if (UsersRepository.existsByName(username)) {
-            var user = UsersRepository.findByName(username).get();
-            var userPassword = user.getPassword();
-            if (userPassword.equals(password)) {
-                ctx.sessionAttribute("currentUser", user.getName());
-                ctx.redirect(NamedRoutes.rootPath());
-            } else {
-                var page = new LoginPage(username, "Wrong username or password");
-                ctx.render("build.jte", model("page", page));
-            }
+        var user = UsersRepository.findByName(name);
+
+        if (user != null && user.getPassword().equals(encrypt(password))) {
+            ctx.sessionAttribute("user", user.getName());
+            ctx.redirect("/");
         } else {
-            var page = new LoginPage(username, "Wrong username or password");
+            var errorMessage = "Wrong username or password";
+            var page = new LoginPage(name, errorMessage);
             ctx.render("build.jte", model("page", page));
         }
     }
 
-    public static void logout(Context ctx) {
-        ctx.sessionAttribute("currentUser", null);
-        ctx.redirect(NamedRoutes.rootPath());
+    public static void destroy(Context ctx) {
+        ctx.sessionAttribute("user", null);
+        ctx.redirect("/");
     }
-    // END
 }
