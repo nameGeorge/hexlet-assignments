@@ -18,4 +18,5 @@ public class PostsPage extends BasePage {
     private List<Post> posts;
 
 }
+
 // END
