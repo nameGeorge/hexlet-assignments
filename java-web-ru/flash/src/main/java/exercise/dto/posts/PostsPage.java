@@ -8,7 +8,6 @@ import exercise.dto.BasePage;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// BEGIN
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,5 +17,3 @@ public class PostsPage extends BasePage {
     private List<Post> posts;
 
 }
-
-// END
