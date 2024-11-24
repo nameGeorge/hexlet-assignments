@@ -11,14 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "HelloServlet", urlPatterns = "/hello")
 public class HelloServlet extends HttpServlet {
     // BEGIN
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String message = Optional.ofNullable(req.getParameter("name"))
-                .filter(name -> !name.trim().isEmpty())
-                .map(name -> "Hello, " + name + "!")
-                .orElse("Hello, Guest!");
-        req.setAttribute("message", message);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = Optional.ofNullable(request.getParameter("name"))
+                .orElseGet(() -> "Guest");
+        String message = String.format("Hello, %s!", name);
+        request.setAttribute("message", message);
 
-        req.getRequestDispatcher("/WEB-INF/hello.jsp").forward(req, resp);
+        request.getRequestDispatcher("/WEB-INF/hello.jsp").forward(request, response);
     }
     // END
 }
