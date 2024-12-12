@@ -1,5 +1,5 @@
 setup:
-	./gradlew wrapper --gradle-version 8.3
+	./gradlew wrapper --gradle-version 8.8
 	./gradlew build
 
 app:
