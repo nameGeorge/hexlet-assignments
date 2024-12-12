@@ -12,7 +12,7 @@ public class Application {
         // BEGIN
         for (Method m : address.getClass().getDeclaredMethods()) {
             if (m.isAnnotationPresent(Inspect.class)) {
-                System.out.println("Method " + m.getName() + " returns a value of type " + m.getReturnType().getSimpleName());
+            System.out.println("Method " + m.getName() + " returns a value of type " + m.getReturnType().getSimpleName());
             }
         }
         // END
