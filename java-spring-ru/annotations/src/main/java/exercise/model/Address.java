@@ -17,10 +17,6 @@ public class Address {
     public String getCity() {
         return city;
     }
-    // END
-    public String getCity() {
-        return city;
-    }
 
     // BEGIN
     @Inspect
