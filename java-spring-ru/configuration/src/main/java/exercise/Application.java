@@ -1,11 +1,12 @@
 package exercise;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,25 +22,18 @@ public class Application {
     // Все пользователи
     private List<User> users = Data.getUsers();
 
-    @Autowired
-    private UserProperties admins;
-
     // BEGIN
+    @Autowired
+    private UserProperties userProperties;
+
     @GetMapping("/admins")
-    public List<String> getAdminsName() {
-        List<String> adminsEmail = admins.getAdmins();
-        List<String> adminsName = new ArrayList<>();
-        for (String s : adminsEmail) {
-            for (User user : users) {
-                if (s.equals(user.getEmail())) {
-                    if (adminsName.contains(user.getName())) {
-                        continue;
-                    }
-                    adminsName.add(user.getName());
-                }
-            }
-        }
-        return adminsName;
+    public List<String> admins() {
+
+        return users.stream()
+                .filter(u -> userProperties.getAdmins().contains(u.getEmail()))
+                .map(User::getName)
+                .sorted()
+                .toList();
     }
     // END
 
@@ -59,4 +53,3 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-}
