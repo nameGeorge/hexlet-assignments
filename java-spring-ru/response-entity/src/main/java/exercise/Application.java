@@ -2,6 +2,7 @@ package exercise;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +30,7 @@ public class Application {
     }
 
     // BEGIN
+    @GetMapping("/posts")
     public ResponseEntity<List<Post>> index(@RequestParam(defaultValue = "10") Integer limit) {
         List<Post> posts = this.posts.stream().limit(limit).toList();
 
