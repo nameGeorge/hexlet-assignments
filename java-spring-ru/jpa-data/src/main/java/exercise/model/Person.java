@@ -1,30 +1,29 @@
 package exercise.model;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 // BEGIN
-@Entity
-@Table(name = "person")
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table()
 public class Person {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column()
     private Long id;
-
+    @Column()
     private String firstName;
-
+    @Column()
     private String lastName;
-
 }
 // END

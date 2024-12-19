@@ -2,15 +2,8 @@ package exercise.controller;
 
 import exercise.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -24,25 +17,26 @@ public class PeopleController {
     private PersonRepository personRepository;
 
     @GetMapping(path = "/{id}")
-    public Person show(@PathVariable long id) {
+    public Person show(@PathVariable Long id) {
         return personRepository.findById(id).get();
     }
 
     // BEGIN
-    @GetMapping
-    public List<Person> index() {
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<Person> people() {
         return personRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Person create(@RequestBody Person person) {
         return personRepository.save(person);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public void destroy(@PathVariable String id) {
-        personRepository.deleteById(Long.parseLong(id));
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        personRepository.deleteById(id);
     }
     // END
 }
