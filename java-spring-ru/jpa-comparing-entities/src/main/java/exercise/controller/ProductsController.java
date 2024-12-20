@@ -33,14 +33,13 @@ public class ProductsController {
     }
 
     // BEGIN
-    @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        List<Product> products = productRepository.findAll();
-        if (products.contains(product)) {
-            throw new ResourceAlreadyExistsException(product.getTitle() + " is exists");
-        } else {
-            return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(product));
+    @PostMapping(path = "")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product create(@RequestBody Product product) {
+        if (productRepository.findAll().contains(product)) {
+            throw new ResourceAlreadyExistsException("Product with id " + product.getId() + " already exists");
         }
+        return productRepository.save(product);
     }
     // END
 
@@ -56,6 +55,7 @@ public class ProductsController {
     public Product update(@PathVariable long id, @RequestBody Product productData) {
         var product =  productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
         product.setTitle(productData.getTitle());
         product.setPrice(productData.getPrice());
 
