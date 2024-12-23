@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/configuration" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/configuration" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/first-start" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/first-start" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/response-entity" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/hexlet-assignments/java-spring-ru/response-entity" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-web-ru/flash" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/hexlet-assignments/java-web-ru/flash" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-web-ru/flash/gradle" />
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/hexlet-assignments/java-web-ru/template" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/hexlet-assignments/java-web-ru/template" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
