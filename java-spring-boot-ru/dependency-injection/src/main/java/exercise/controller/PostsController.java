@@ -19,46 +19,48 @@ import exercise.repository.PostRepository;
 import exercise.exception.ResourceNotFoundException;
 
 // BEGIN
-
 @RestController
 @RequestMapping("/posts")
 public class PostsController {
-
-    @Autowired
     private PostRepository postRepository;
 
-    @Autowired
     private CommentRepository commentRepository;
 
-    @GetMapping("")
-    public List<Post> index() {
+    public PostsController(PostRepository postRepository, CommentRepository commentRepository) {
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    @GetMapping
+    public List<Post> posts() {
         return postRepository.findAll();
     }
 
-    @PostMapping("")
+    @GetMapping("/{id}")
+    public Post post(@PathVariable long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+    }
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Post create(@RequestBody Post post) {
         return postRepository.save(post);
     }
 
-    @GetMapping("/{id}")
-    public Post show(@PathVariable long id) {
-        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
-    }
-
     @PutMapping("/{id}")
-    public Post update(@RequestBody Post post, @PathVariable long id) {
-        return postRepository.findById(id).map(p -> {
-            p.setTitle(post.getTitle());
-            p.setBody(post.getBody());
-            return postRepository.save(p);
-        }).orElseThrow(() -> new ResourceNotFoundException(id + "not found"));
+    public Post edit(@PathVariable long id, @RequestBody Post post) {
+        Post ifPostIsExists = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
+        ifPostIsExists.setBody(post.getBody());
+        ifPostIsExists.setTitle(post.getTitle());
+        return postRepository.save(ifPostIsExists);
     }
 
     @DeleteMapping("/{id}")
-    public void destroy(@PathVariable long id) {
-        commentRepository.deleteByPostId(id);
+    public void delete(@PathVariable long id) {
         postRepository.deleteById(id);
+        commentRepository.deleteByPostId(id);
     }
 }
 // END
