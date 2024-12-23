@@ -1,9 +1,0 @@
----
-
-# BEGIN
-spring:
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-# END

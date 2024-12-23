@@ -1,8 +1,0 @@
----
-
-spring:
-  jpa:
-    show-sql: true
-  output:
-    ansi:
-      enabled: always
