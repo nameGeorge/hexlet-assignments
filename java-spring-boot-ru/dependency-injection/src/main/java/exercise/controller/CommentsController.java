@@ -26,33 +26,34 @@ public class CommentsController {
     @Autowired
     private CommentRepository commentRepository;
 
-    @GetMapping("")
-    public List<Comment> index() {
+    @GetMapping
+    public List<Comment> getAllComments() {
         return commentRepository.findAll();
     }
 
-    @PostMapping("")
+    @GetMapping("/{id}")
+    public Comment getCommentById(@PathVariable(value = "id") Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
+    }
+
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment create(@RequestBody Comment comment) {
+    public Comment createComment(@RequestBody Comment comment)  {
         return commentRepository.save(comment);
     }
 
-    @GetMapping("/{id}")
-    public Comment show(@PathVariable long id) {
-        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id " + id + " not found"));
-    }
-
     @PutMapping("/{id}")
-    public Comment update(@RequestBody Comment comment, @PathVariable long id) {
-        return commentRepository.findById(id).map(c -> {
-            c.setBody(comment.getBody());
-            return commentRepository.save(c);
-        }).orElseThrow(() -> new ResourceNotFoundException(id + "not found"));
+    public Comment updateComment(@PathVariable(value  =  "id") Long commentId, @RequestBody Comment comment)   {
+        Comment commentToUpdate = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
+        commentToUpdate.setBody(comment.getBody());
+        return commentRepository.save(commentToUpdate);
     }
 
     @DeleteMapping("/{id}")
-    public void destroy(@PathVariable long id) {
-        commentRepository.deleteById(id);
+    public void deleteComment(@PathVariable(value   =   "id") Long commentId)  {
+        commentRepository.deleteById(commentId);
     }
 }
 // END
