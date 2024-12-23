@@ -2,15 +2,7 @@ package exercise.controller;
 
 import exercise.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.List;
 
@@ -22,45 +14,57 @@ import exercise.exception.ResourceNotFoundException;
 @RestController
 @RequestMapping("/posts")
 public class PostsController {
-    private PostRepository postRepository;
 
     private CommentRepository commentRepository;
+    private PostRepository postRepository;
 
-    public PostsController(PostRepository postRepository, CommentRepository commentRepository) {
-        this.postRepository = postRepository;
+    public PostsController(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
     }
 
     @GetMapping
-    public List<Post> posts() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<Post> getPosts() {
         return postRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public Post post(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public Post getPost(@PathVariable long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@RequestBody Post post) {
-        return postRepository.save(post);
+    public Post create(@RequestBody Post postDate) {
+        List<Post> posts = postRepository.findAll();
+        var post = posts.stream().filter(p -> p.equals(postDate)).findFirst();
+        if(post.isPresent()) {
+            throw new RuntimeException("Post already exists with id " + post.get().getId());
+        } else {
+             return postRepository.saveAndFlush(postDate);
+        }
     }
 
     @PutMapping("/{id}")
-    public Post edit(@PathVariable long id, @RequestBody Post post) {
-        Post ifPostIsExists = postRepository.findById(id)
+    @ResponseStatus(HttpStatus.OK)
+    public Post update(@RequestBody Post postData, @PathVariable long id) {
+        var post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
-        ifPostIsExists.setBody(post.getBody());
-        ifPostIsExists.setTitle(post.getTitle());
-        return postRepository.save(ifPostIsExists);
+        post.setBody(postData.getBody());
+        post.setTitle(postData.getTitle());
+        postRepository.saveAndFlush(post);
+        return post;
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable long id) {
         postRepository.deleteById(id);
         commentRepository.deleteByPostId(id);
     }
+
 }
 // END
