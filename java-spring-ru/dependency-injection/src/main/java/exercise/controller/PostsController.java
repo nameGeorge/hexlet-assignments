@@ -35,6 +35,7 @@ public class PostsController {
         return postRepository.findAll();
     }
 
+
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public Post create(@RequestBody Post post) {
