@@ -1,7 +1,6 @@
-package exercise.controller;
+ppackage exercise.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,59 +22,46 @@ import exercise.exception.ResourceNotFoundException;
 @RestController
 @RequestMapping("/comments")
 public class CommentsController {
-
     @Autowired
     private CommentRepository commentRepository;
 
+    //GET /comments — список всех комментариев
     @GetMapping
-    public List<Comment> comments() {
+    public List<Comment> index() {
         return commentRepository.findAll();
     }
 
+    //GET /comments/{id} – просмотр конкретного комментария
     @GetMapping("/{id}")
-    public Comment comment(@PathVariable long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This comment by " + id + " not exists"));
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Comment create(@RequestBody Comment comment) {
-        return commentRepository.save(comment);
-    }
-
-    @PutMapping("/{id}")
-    public Comment edit(@PathVariable long id, @RequestBody Comment comment) {
-        Comment ifCommentIsExists = commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This comment by " + id + " not exists"));
-        ifCommentIsExists.setBody(comment.getBody());
-        return commentRepository.save(ifCommentIsExists);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
-        commentRepository.deleteById(id);
-    }
-}
-        }
-    }
-
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Comment update(@RequestBody Comment commentData, @PathVariable long id) {
+    public Comment show(@PathVariable long id) {
         var comment = commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " not found"));
-        comment.setBody(commentData.getBody());
-        commentRepository.saveAndFlush(comment);
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Comment with id %d not found", id)));
+
         return comment;
     }
 
+    //POST /comments – создание нового комментария. При успешном создании возвращается статус 201
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody Comment comment) {
+        commentRepository.save(comment);
+    }
+
+    //PUT /comments/{id} – обновление комментария
+    @PutMapping("/{id}")
+    public void update(@PathVariable long id, @RequestBody Comment comment) {
+        commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Comment with id %d not found", id)));
+
+        comment.setId(id);
+        commentRepository.save(comment);
+    }
+
+    //DELETE /comments/{id} – удаление комментария
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable long id) {
         commentRepository.deleteById(id);
     }
-
 
 }
 // END
