@@ -8,10 +8,9 @@ public class Night implements Daytime {
         return name;
     }
 
-    // BEGIN
+
     @PostConstruct
     public void init() {
         System.out.println("Night created");
     }
-    // END
 }
