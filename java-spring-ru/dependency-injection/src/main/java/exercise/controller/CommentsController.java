@@ -1,7 +1,6 @@
 package exercise.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,33 +26,32 @@ public class CommentsController {
     @Autowired
     private CommentRepository commentRepository;
 
-    @GetMapping
-    public List<Comment> comments() {
+    @GetMapping("")
+    public List<Comment> index() {
         return commentRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Comment comment(@PathVariable long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This comment by " + id + " not exists"));
-    }
-
-    @PostMapping
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public Comment create(@RequestBody Comment comment) {
         return commentRepository.save(comment);
     }
 
+    @GetMapping("/{id}")
+    public Comment show(@PathVariable long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment with id " + id + " not found"));
+    }
+
     @PutMapping("/{id}")
-    public Comment edit(@PathVariable long id, @RequestBody Comment comment) {
-        Comment ifCommentIsExists = commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("This comment by " + id + " not exists"));
-        ifCommentIsExists.setBody(comment.getBody());
-        return commentRepository.save(ifCommentIsExists);
+    public Comment update(@RequestBody Comment comment, @PathVariable long id) {
+        return commentRepository.findById(id).map(c -> {
+            c.setBody(comment.getBody());
+            return commentRepository.save(c);
+        }).orElseThrow(() -> new ResourceNotFoundException(id + "not found"));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
+    public void destroy(@PathVariable long id) {
         commentRepository.deleteById(id);
     }
 }

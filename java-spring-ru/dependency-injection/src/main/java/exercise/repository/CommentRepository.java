@@ -9,5 +9,5 @@ import exercise.model.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional
-    void deleteByPostId(long postId);
+    long deleteByPostId(long postId);
 }
