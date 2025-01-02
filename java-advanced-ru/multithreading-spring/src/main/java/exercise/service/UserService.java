@@ -19,27 +19,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    // BEGIN
+    public Mono<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Mono<User> create(User user) {
         return userRepository.save(user);
     }
 
-    public Mono<User> findById(long userId) {
-        return userRepository.findById((long) userId);
+    public Mono<User> update(User user) {
+        return userRepository.save(user);
     }
 
-    public Mono<User> update(long userId, User user) {
-        return userRepository.findById((long) userId)
-                .flatMap(u -> {
-                    u.setFirstName(user.getFirstName());
-                    u.setLastName(user.getLastName());
-                    u.setEmail(user.getEmail());
-                    return userRepository.save(u);
-                });
+    public Mono deleteById(Long id) {
+        return userRepository.deleteById(id);
     }
-
-    public Mono<Void> delete(long userId) {
-        return userRepository.deleteById((long) userId);
-    }
-    // END
 }
